@@ -4,60 +4,154 @@
     ViewData["Title"] = "Create User";
 }
 <div class="col-md-12">
-    <div class="card-header bg-primary" >
+    <div class="card-header bg-primary">
         <h4 class="">Create User Form</h4>
     </div>
-    <form>
+    <form method="post">
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" id="surname" class="form-control" />
+            <input type="hidden" id="listCount" asp-for="ListCount" />
+            <input type="hidden" id="suc" asp-for="Mess" />
+            <div id="create">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Unique Code</label>
+                            <input type="text" id="randonNumber" readonly="readonly" asp-for="CreateUserVM.UniqueCode" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Date Created</label>
+                            <input type="text" id="dateCreated" readonly="readonly" asp-for="CreateUserVM.DateCreated" class="form-control" />
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <label>Address</label>
-                    <input type="text" id="address" class="form-control" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" required id="surname" asp-for="CreateUserVM.Name" class="form-control" />
+                            <span asp-validation-for="CreateUserVM.Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Address</label>
+                        <input type="text" id="address" asp-for="CreateUserVM.Address" class="form-control" />
+                    </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select class="form-control" id="gender" asp-for="CreateUserVM.Gender">
+                                <option selected="selected" value="0">--Select Gender--</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Marital Status</label>
+                            <select class="form-control" id="status" asp-for="CreateUserVM.Marital">
+                                <option selected="selected" value="0">--Select Status--</option>
+                                <option value="Married">Married</option>
+                                <option value="Single">Single</option>
+                                <option value="Divorced">Divorced</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="text" id="phone" asp-for="CreateUserVM.PhoneNumber" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Date of Birth</label>
+                        <input type="date" id="dateBirth" asp-for="CreateUserVM.DateOfBirth" class="form-control" />
+                    </div>
+                </div>
+                <button type="submit" asp-route-id="1" class="btn btn-primary">Submit</button>
+                @if (Model.ListCount == 1)
+                {
+                    <button type="button" id="viewList" class="btn btn-primary">View User</button>
+                }
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <select class="form-control" id="gender">
-                            <option selected="selected" value="0">--Select Gender--</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Marital Status</label>
-                        <select class="form-control" id="status">
-                            <option selected="selected" value="0">--Select Status--</option>
-                            <option value="Married">Married</option>
-                            <option value="Single">Single</option>
-                            <option value="Divorced">Divorced</option>
-                            <option value="Others">Others</option>
-                        </select>
-                    </div>
-                </div>
+            <div id="tabView">
+                @if (Model.UserList.Count > 0)
+                {
+                    <button type="button" id="createNew" class="btn btn-primary">Create New User</button>
+                    <table class="table table-bordered" id="viewUsers">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>User Name</th>
+                                <th>Phone Number</th>
+                                <th>Gender</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.UserList.Count > 0)
+                            {
+                                for (int i = 0; i < Model.UserList.Count(); i++)
+                                {
+                                    var item = Model.UserList[i];
+                                    <tr>
+                                        <td>@(i +1)</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.PhoneNumber</td>
+                                        <td>@item.Gender</td>
+                                        <td>
+                                            <button class="btn btn-primary" type="button">
+                                                Edit
+                                            </button>|
+                                            <button asp-route-id="2" asp-route-ids="@item.Id" 
+                                                    class="btn btn-danger">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                }
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="text" id="phone" class="form-control" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <label>Date of Birth</label>
-                    <input type="date" id="dateBirth" class="form-control" />
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </form>
 </div>
+<script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+        crossorigin="anonymous">
+
+</script>
+<script type="text/javascript">
+    jQuery( ()=>{
+        suc = document.getElementById('suc').value;
+        listCount = document.getElementById('listCount').value;
+        if (suc != '') {
+            alert(suc);
+        }
+        if (listCount == "1") {
+            document.getElementById('create').style.display = "none";
+            document.getElementById('tabView').style.display = "block";
+        } else {
+            document.getElementById('create').style.display = "block";
+            document.getElementById('tabView').style.display = "none";
+        }
+        jQuery('#createNew').on('click', () => {
+            document.getElementById('create').style.display = "block";
+            document.getElementById('tabView').style.display = "none";
+        });
+        jQuery('#viewList').on('click', () => {
+            document.getElementById('create').style.display = "none";
+            document.getElementById('tabView').style.display = "block";
+        });
+    });
+</script>

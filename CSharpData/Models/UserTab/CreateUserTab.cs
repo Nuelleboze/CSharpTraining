@@ -10,7 +10,8 @@ namespace CSharpData.Models.UserTab
     public class CreateUserTab
     {
         public int Id { get; set; }
-        [MaxLength(30)]
+        [Required(ErrorMessage ="This field is required")]
+        [MaxLength(30, ErrorMessage ="This field cannot be more than 30 characters")]
         public string Name { get; set; }
         [MaxLength(50)]
         public string Address { get; set; }
@@ -21,5 +22,8 @@ namespace CSharpData.Models.UserTab
         [MaxLength(11)]
         public string PhoneNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
+        [MaxLength(10)]
+        public string UniqueCode { get; set; }
+        public DateTime DateCreated { get; set; }
     }
 }

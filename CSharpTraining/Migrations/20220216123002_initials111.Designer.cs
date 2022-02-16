@@ -4,14 +4,16 @@ using CSharpData.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CSharpTraining.Migrations
 {
     [DbContext(typeof(CSharpDbContext))]
-    partial class CSharpDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220216123002_initials111")]
+    partial class initials111
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -9,7 +9,9 @@ namespace CSharpTraining.ViewModels
     public class CreateUserVM
     {
         public int? Id { get; set; }
-        [MaxLength(30)]
+       
+        [Required(ErrorMessage = "This field is required")]
+        [MaxLength(30, ErrorMessage = "This field cannot be more than 30 characters")]
         public string Name { get; set; }
         [MaxLength(50)]
         public string Address { get; set; }
@@ -20,5 +22,8 @@ namespace CSharpTraining.ViewModels
         [MaxLength(11)]
         public string PhoneNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
+        [MaxLength(10)]
+        public string UniqueCode { get; set; }
+        public string DateCreated { get; set; }
     }
 }
