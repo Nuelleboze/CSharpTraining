@@ -28,25 +28,74 @@ namespace CSharpTraining.Pages.Testing
         [BindProperty]
         public CreateUserVM CreateUserVM { get; set; } = new CreateUserVM();
         public List<CreateUserVM> UserList { get; set; } = new List<CreateUserVM>();
-        public async Task<IActionResult> OnGetAsync (string suc)
+        public async Task<IActionResult> OnGetAsync(string suc, int? id)
         {
-            UserList = await _context.CreateUserTabs
-                .Select(users => new CreateUserVM 
+            //checking if record has been saved
+
+            //checking if we want to edit a saved record
+            if (id == null)
+            {
+                UserList = await _context.CreateUserTabs
+                .Select(users => new CreateUserVM
                 {
-                    Id=users.Id,
+                    Id = users.Id,
                     Name = users.Name,
                     Address = users.Address,
                     PhoneNumber = users.PhoneNumber,
-                    Gender= users.Gender,
-                    Marital=users.Marital,
+                    Gender = users.Gender,
+                    Marital = users.Marital,
                     DateOfBirth = users.DateOfBirth,
                     DateCreated = users.DateCreated.ToString("dd/MM/yyyy"),
-                    UniqueCode=users.UniqueCode
+                    UniqueCode = users.UniqueCode,
+                    DateBirth = users.DateOfBirth.ToString("yyyy-MM-dd")
                 }).ToListAsync();
-            if (UserList.Count > 0) ListCount = 1;
-            CreateUserVM.UniqueCode = GenerateRandomNumbers.RandomString(10);
-            CreateUserVM.DateCreated = DateTime.Now.ToString("dd/MM/yyyy");
-            if (suc == "" || suc == null)
+                CreateUserVM.UniqueCode = GenerateRandomNumbers.RandomString(10);
+                CreateUserVM.DateCreated = DateTime.Now.ToString("dd/MM/yyyy");
+                if (UserList.Count > 0) ListCount = 1;
+            }
+            else
+            {
+                if (suc == "11")
+                {
+                    var user = await _context.CreateUserTabs.Where((user => user.Id == Convert.ToInt32(id))).FirstOrDefaultAsync();
+                    _context.CreateUserTabs.Remove(user);
+                    await _context.SaveChangesAsync();
+                    UserList = await _context.CreateUserTabs
+                .Select(users => new CreateUserVM
+                {
+                    Id = users.Id,
+                    Name = users.Name,
+                    Address = users.Address,
+                    PhoneNumber = users.PhoneNumber,
+                    Gender = users.Gender,
+                    Marital = users.Marital,
+                    DateOfBirth = users.DateOfBirth,
+                    DateCreated = users.DateCreated.ToString("dd/MM/yyyy"),
+                    UniqueCode = users.UniqueCode,
+                    DateBirth = users.DateOfBirth.ToString("yyyy-MM-dd")
+                }).ToListAsync();
+                    if (UserList.Count > 0) ListCount = 1;
+                }
+                else
+                {
+                    CreateUserVM = await _context.CreateUserTabs.Where(xx => xx.Id == id)
+                        .Select(users => new CreateUserVM
+                        {
+                            Id = users.Id,
+                            Name = users.Name,
+                            Address = users.Address,
+                            PhoneNumber = users.PhoneNumber,
+                            Gender = users.Gender,
+                            Marital = users.Marital,
+                            DateOfBirth = users.DateOfBirth,
+                            DateCreated = users.DateCreated.ToString("dd/MM/yyyy"),
+                            UniqueCode = users.UniqueCode,
+                            DateBirth = users.DateOfBirth.ToString("yyyy-MM-dd")
+                        }).FirstOrDefaultAsync();
+                    if (UserList.Count > 0) ListCount = 0;
+                }
+            }
+            if (suc == "" || suc == null || suc == "10")
                 return Page();
             else
             {
@@ -54,10 +103,10 @@ namespace CSharpTraining.Pages.Testing
                 return Redirect("./CreateUser");
             }
         }
-        public async Task<IActionResult> OnPostAsync(int id, int? ids)
+        public async Task<IActionResult> OnPostAsync(string id)
         {
             int suc = 0;
-            if (id == 1)
+            if (id == "sub")
             {
                 if (!ModelState.IsValid)
                 {
@@ -94,13 +143,13 @@ namespace CSharpTraining.Pages.Testing
             }
             else
             {
-                var user = await _context.CreateUserTabs.Where((user => user.Id == ids)).FirstOrDefaultAsync();
+                var user = await _context.CreateUserTabs.Where((user => user.Id == Convert.ToInt32(id))).FirstOrDefaultAsync();
                 _context.CreateUserTabs.Remove(user);
                 suc = await _context.SaveChangesAsync();
                 if (suc > 0) Mess = "User Successfully Deleted";
                 else Mess = "An Error Occurred";
             }
-            return Redirect("./CreateUser?suc="+ Mess);
+            return Redirect("./CreateUser?suc=" + Mess);
         }
     }
 }

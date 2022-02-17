@@ -25,5 +25,6 @@ namespace CSharpTraining.ViewModels
         [MaxLength(10)]
         public string UniqueCode { get; set; }
         public string DateCreated { get; set; }
+        public string DateBirth { get; set; }
     }
 }

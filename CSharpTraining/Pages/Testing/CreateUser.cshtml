@@ -15,6 +15,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
+                            <input type="hidden" id="id" asp-for="CreateUserVM.Id" />
                             <label>Unique Code</label>
                             <input type="text" id="randonNumber" readonly="readonly" asp-for="CreateUserVM.UniqueCode" class="form-control" />
                         </div>
@@ -75,7 +76,7 @@
                         <input type="date" id="dateBirth" asp-for="CreateUserVM.DateOfBirth" class="form-control" />
                     </div>
                 </div>
-                <button type="submit" asp-route-id="1" class="btn btn-primary">Submit</button>
+                <button type="submit" id="submitForm" asp-route-id="sub" class="btn btn-primary">Submit</button>
                 @if (Model.ListCount == 1)
                 {
                     <button type="button" id="viewList" class="btn btn-primary">View User</button>
@@ -84,7 +85,7 @@
             <div id="tabView">
                 @if (Model.UserList.Count > 0)
                 {
-                    <button type="button" id="createNew" class="btn btn-primary">Create New User</button>
+                    <button type="button" style="margin-bottom:2%" id="createNew" class="btn btn-primary">Create New User</button>
                     <table class="table table-bordered" id="viewUsers">
                         <thead>
                             <tr>
@@ -103,17 +104,31 @@
                                     var item = Model.UserList[i];
                                     <tr>
                                         <td>@(i +1)</td>
-                                        <td>@item.Name</td>
-                                        <td>@item.PhoneNumber</td>
-                                        <td>@item.Gender</td>
+                                        <td class="nameRow @i">@item.Name</td>
+                                        <td class="phoneRow @i">@item.PhoneNumber</td>
+                                        <td class="genderRow @i">@item.Gender</td>
                                         <td>
-                                            <button class="btn btn-primary" type="button">
+                                            <input type="hidden" class="idRow @i" value="@item.Id" />
+                                            <input type="hidden" class="addrs @i" value="@item.Address" />
+                                            <input type="hidden" class="martStat @i" value="@item.Marital" />
+                                            <input type="hidden" class="dateBirth @i" value="@item.DateBirth" />
+                                            <input type="hidden" class="unCode @i" value="@item.UniqueCode" />
+                                            <input type="hidden" class="dateCreat @i" value="@item.DateCreated" />
+                                            <button whatClicked="@i" class="btn btn-primary" id="btnEdit" type="button">
                                                 Edit
-                                            </button>|
-                                            <button asp-route-id="2" asp-route-ids="@item.Id" 
-                                                    class="btn btn-danger">
+                                            </button> |
+
+                                            @*<a whatClicked="@i" class="btn btn-primary" id="btnEdit" asp-page="./CreateUser" asp-route-suc="10" asp-route-id="@item.Id">
+            Edit
+        </a> |*@
+                                            <a class="btn btn-danger" id="btndelete"
+                                               asp-page="./CreateUser" asp-route-suc="11" asp-route-id="@item.Id">
                                                 Delete
-                                            </button>
+                                            </a> 
+                                            @*<button asp-route-id="@item.Id" type="submit"
+                                                    class="btn btn-danger" id="btnDelete">
+                                                Delete
+                                            </button>*@
                                         </td>
                                     </tr>
                                 }
@@ -141,7 +156,8 @@
         if (listCount == "1") {
             document.getElementById('create').style.display = "none";
             document.getElementById('tabView').style.display = "block";
-        } else {
+        }
+        else {
             document.getElementById('create').style.display = "block";
             document.getElementById('tabView').style.display = "none";
         }
@@ -152,6 +168,31 @@
         jQuery('#viewList').on('click', () => {
             document.getElementById('create').style.display = "none";
             document.getElementById('tabView').style.display = "block";
+        });
+        jQuery('#viewUsers').on('click', '#btnEdit', function(eq) {
+            eq.preventDefault();
+            //getting the value of what u click
+            whatClicked = jQuery(this).attr('whatClicked');
+            randonNumberRow = jQuery('.unCode.' + whatClicked).val();
+            addressRow = jQuery('.addrs.' + whatClicked).val();
+            maritalRow = jQuery('.martStat.' + whatClicked).val();
+            dateBirthRow = jQuery('.dateBirth.' + whatClicked).val();
+            dateCreatedRow = jQuery('.dateCreat.' + whatClicked).val();
+            idRow = jQuery('.idRow.' + whatClicked).val();
+            nameRow = jQuery('.nameRow.' + whatClicked).text();
+            phoneRow = jQuery('.phoneRow.' + whatClicked).text();
+            genderRow = jQuery('.genderRow.' + whatClicked).text();
+            //placing the values back to the input fields
+            jQuery('#id').val(idRow);
+            jQuery('#randonNumber').val(randonNumberRow); jQuery('#dateCreated').val(dateCreatedRow);
+            jQuery('#surname').val(nameRow); jQuery('#address').val(addressRow);
+            jQuery('#gender').val(genderRow); jQuery('#status').val(maritalRow);
+            jQuery('#phone').val(phoneRow); jQuery('#dateBirth').val(dateBirthRow);
+            //hide table and show input forms
+            document.getElementById('create').style.display = "block";
+            document.getElementById('tabView').style.display = "none";
+            jQuery('#submitForm').html('Update');
+
         });
     });
 </script>
